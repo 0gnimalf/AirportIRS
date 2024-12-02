@@ -1,0 +1,50 @@
+<div th:fragment="navbar">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+    <div class="container-fluid">
+        <b class="navbar-brand" >AirportIRS</b>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex align-items-center" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/home">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/home/arrival">Табло прилётов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/home/departure">Табло вылетов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/home/statistic">Статистика</a>
+                </li>
+                <!-- Дополнительные вкладки для администратора -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin/flights">Перейти к общему просмотру рейсов</a>
+                </li>
+                <!-- Выпадающее меню для добавления -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" id="addDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Добавление новых сущностей
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="addDropdown">
+                        <li><a class="dropdown-item" href="/admin/flights/new">Добавить рейс</a></li>
+                        <li><a class="dropdown-item" href="/admin/new/airport">Добавить аэропорт</a></li>
+                        <li><a class="dropdown-item" href="/admin/new/aircraft">Добавить самолет</a></li>
+                        <li><a class="dropdown-item" href="/admin/new/airline">Добавить авиакомпанию</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/home/profile">Личный кабинет</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">О Нас</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</div>

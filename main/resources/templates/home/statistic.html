@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistic</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" >
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<!-- Навигационная панель -->
+<div id="navbar"></div>
+<div th:replace="~{fragments/navigation-user :: navbar}"></div>
+<div class="container md-2">
+    <h1>Статистика</h1>
+
+    <form th:action="@{/home/statistic}" method="get" id="statusForm">
+        <label for="year">Выбор года:</label>
+        <select id="year" name="year">
+            <option value="2023">2023</option>
+            <option value="2024" selected>2024</option>
+        </select>
+        <br/>
+        <label for="statuses">Выберите статусы:</label><button type="submit">Применить</button>
+
+        <br/>
+        <select id="statuses" name="statuses" multiple>
+            <option th:each="status : ${statuses}"
+                    th:value="${status}"
+                    th:text="${status.name}"></option>
+        </select>
+    </form>
+
+    <canvas id="flightChart" width="800" height="280"></canvas>
+
+</div>
+<br/><br/><br/><br/><br/><br/>
+</body>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const chartData = /*[[${statusesChartData}]]*/ {}
+        const ctx = document.getElementById('flightChart').getContext('2d');
+
+        // Собираем все уникальные дни для оси X и сортируем их
+        const allDays = [...new Set(
+            Object.values(chartData)
+                .flatMap(statusData => Object.keys(statusData))
+        )].sort();
+
+        // Создаем метки для подписей только по понедельникам
+        const labels = allDays.map(date => {
+            const day = new Date(date);
+            return day.getDay() === 1 ? date : ''; // Подписываем только понедельники
+        });
+
+        // Создаем наборы данных для каждого статуса
+        const datasets = Object.keys(chartData).map(status => {
+            const data = allDays.map(day => chartData[status][day] || 0); // Подставляем 0 для отсутствующих дней
+            return {
+                label: status,
+                data: data,
+                borderColor: getRandomColor(),
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3,
+                pointRadius: 2,
+                pointBackgroundColor: getRandomColor()
+            };
+        });
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: allDays,
+                datasets: datasets},
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14}}},
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.raw}`;}}}},
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Дни (подпись понедельников)',
+                            font: {
+                                size: 16}},
+                        ticks: {
+                            callback: function (value, index) {
+                                return labels[index]; // Подпись только для понедельников
+                            },
+                            // maxRotation: 0, // Отключаем наклон меток
+                            autoSkip: false // Отключаем автоматическое пропускание меток
+                        },
+                        grid: {
+                            drawTicks: false,
+                            drawOnChartArea: true,
+                            color: 'rgba(200, 200, 200, 0.3)',
+                            lineWidth: 1,
+                            borderDash: [5, 5], // Прерывистая линия сетки
+                            tickLength: 0}},
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Количество рейсов',
+                            font: {
+                                size: 16}},
+                        beginAtZero: true}}}});
+
+
+        function getRandomColor() {
+            return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.7)`;
+        }
+    });
+</script>
+<!-- Скрипты Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>

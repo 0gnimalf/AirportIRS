@@ -1,0 +1,13 @@
+<div th:fragment="search-flights">
+  <div class="col-auto">
+    <input type="text" name="keyword"  placeholder="Ключевое слово" size="40" th:value="${keyword}" />
+  </div>
+  <div class="col-auto">
+    <label for="startDate" class="form-label">Дата от</label>
+    <input type="date" name="startDate" id="startDate"  placeholder="Дата от" th:value="${startDate}" />
+  </div>
+  <div class="col-auto">
+    <label for="endDate" class="form-label">Дата до</label>
+    <input type="date" name="endDate" id="endDate"  placeholder="Дата до" th:value="${endDate}" />
+  </div>
+</div>

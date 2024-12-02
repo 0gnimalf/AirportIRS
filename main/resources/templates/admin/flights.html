@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Flights</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" >
+</head>
+<body>
+<!-- Навигационная панель -->
+<div id="navbar"></div>
+<div th:replace="~{fragments/navigation-admin :: navbar}"></div>
+<div class="container mt-4">
+    <h1>Список всех рейсов</h1>
+    <div class="text-end"><a href="/admin/flights/new" class="btn btn-primary">Добавить новый рейс</a></div>
+    <!--поле поиска по ключевому слову-->
+    <h4>Поиск рейса</h4>
+    <div>
+        <form th:action="@{/admin/flights}">
+            <div id="search-flights"></div>
+            <div th:replace="~{fragments/search-flight-form :: search-flights}"></div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Поиск</button>
+                <a th:href="@{/admin/flights}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>Номер рейса</th>
+            <th>Аэропорт отправления</th>
+            <th>Аэропорт прибытия</th>
+            <th>Время отправления</th>
+            <th>Время прибытия</th>
+            <th>Статус</th>
+            <th>Самолет</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="flight : ${flightsPage}">
+            <td th:text="${flight.number}"></td>
+            <td th:text="${flight.departureAirport.name}"></td>
+            <td th:text="${flight.arrivalAirport.name}"></td>
+            <td th:text="${#temporals.format(flight.departureTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(flight.arrivalTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${flight.status.name}"></td>
+            <td th:text="${flight.aircraft.model}"></td>
+            <td>
+                <div class="btn-group" role="group">
+                    <a th:href="@{/admin/flights/{id}/edit(id=${flight.id})}" class="btn btn-warning btn-sm">Редактировать</a>
+                    <a th:href="@{/admin/flights/{id}/delete(id=${flight.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Вы уверены, что хотите удалить рейс?');">Удалить</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${!flightsPage.isEmpty()}">
+        <span>Страница <span th:text="${currentPage + 1}"></span> из <span th:text="${totalPages}"></span></span>
+        <div th:with="queryString=(
+               ${keyword != null} ? '&keyword=' + ${keyword} : '')
+            + (${startDate != null} ? '&startDate=' + ${startDate} : '')
+            + (${endDate != null} ? '&endDate=' + ${endDate} : '')">
+
+            <a th:if="${currentPage > 0}"
+               th:href="@{'/admin/flights?page=' + ${currentPage - 1} + ${queryString}}">Назад</a>
+            <a th:if="${currentPage < totalPages - 1}"
+               th:href="@{'/admin/flights?page=' + ${currentPage + 1} + ${queryString}}">Вперед</a>
+        </div>
+    </div>
+</div>
+<br/><br/><br/><br/><br/><br/>
+</body>
+<!-- Скрипты Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>
